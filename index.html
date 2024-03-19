@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'styles/app.scss' %}">
+
+<!-- Custom Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+{% endblock styles %}
+
+{% block scripts %}
+{% script 'app' %}
+{% endblock scripts %}
+
+{% block content %}
+<article>
+	<div class="container">
+
+		<div class="copy-width">
+			<figure class="graphic-container">
+				<img class="graphic-photo" src="{% static '/assets/images/grid-map.png' %}" alt="Map of DC showing density of cherry blossom trees">
+				<div class="legend" aria-hidden="true">
+					<div class="legend-text legend-title">Cherry blossom trees</div>
+					<img class="graphic-photo-legend" src="{% static '/assets/images/grid-legend.png' %}" alt="Map of DC showing density of cherry blossom trees">
+					<div class="legend-text legend-left">Least</div>
+					<div class="legend-text legend-right">Most</div>
+				</div>
+			</figure>
+
+			<header class="header">
+				<h1 class="headline centered">{{ meta.headline }}</h1>
+				<div class="attribution">
+					{% set comma = joiner() %}
+					<p class="byline">
+						By {%- for author in meta.byline -%}
+						{% if not loop.last %}{{ comma() }}{% elif not loop.first %} and{% endif %} <span class="author" itemscope itemtype="http://schema.org/Person"><a itemprop="url" href="{{ author.url }}">{{ author.name }}</a></span>
+						{%- endfor -%}
+					</p>
+
+					<p class="pubdate">March 19, 2024</p>
+				</div>
+
+			</header>
+
+			<hr>
+
+			{% for p in copy.body %}
+			<p class="prose">{{ p.value }}</p>
+			{% endfor %}
+
+			<hr>
+
+			<figure class="graphic-container">
+				<div class="graphic-header">
+					<h3 class="graphic-hed">How Many Trees Can You See Nearby?</h3>
+				</div>
+
+				<div id="map-container">
+					<div id="map"></div>
+					<div id="map-overlay">
+						<!--div class="map-bar-title">How many trees can you see nearby?</div-->
+						<div class="map-bar-text">
+							<div id="map-address-text" class="map-highlight-text">2000 GEORGIA AVENUE NW</div>
+							<div id="map-trees-text">145</div>&nbsp;cherry blossom trees within one half mile
+						</div>
+
+						<div class="checkbox map-bar-text">
+							<div class="toggle-label-text">Show Metro stations</div>
+							<div class="toggle-holder">
+								<input class="toggle-input" id="metro-toggle" type="checkbox" name="metro-toggle" type="checkbox" value="metro">
+								<label class="toggle-label" for="metro-toggle">
+									Toggle
+								</label>
+							</div>
+						</div>
+
+						<div class="instructions">
+							<div>Click on the map to count trees</div>
+						</div>
+					</div>
+				</div>
+
+				<figcaption class="graphic-footer">
+					<div>Sources: Tree locations from <a href="https://caseytrees.org/" target="_blank">Casey Trees</a>, Metro locations from <a href="https://opendata.dc.gov/" target="_blank">Open Data DC</a></div>
+					<div>Note: Trees planted on private property and some parks are not included.</div>
+				</figcaption>
+			</figure>
+
+			<hr>
+
+			{% for p in copy.body2 %}
+			<p class="prose">{{ p.value }}</p>
+			{% endfor %}
+
+			<hr>
+
+			<figure class="graphic-container">
+				<div class="graphic-header">
+					<h3 class="graphic-hed">Blossoms Near the Metro</h3>
+				</div>
+
+				<table class="metro-table" id="metro-trees-table" collapsed="true">
+					<thead>
+						<tr>
+							<th scope="col" class="metro-name">Station</th>
+							<th scope="col">Cherry blossom trees within one half mile</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for obj in metro_tree_counts %}
+						<tr>
+							<td class="metro-name">{{ obj.name_short }}
+								<span class="metro-symbols" aria-hidden="true">{{ obj.line_display }}</span>
+								<span class="sr-only">{{ obj.line_names }}</span>
+							</td>
+							<td class="metro-tree-count">
+								<span class="sr-only">{{ obj.tree_count }}</span>
+								<div class="tree-bar-container" aria-hidden="true">
+									<div class="tree-bar-max">
+										<div class="tree-bar" style="width: {{ (100 * (obj.tree_count/593)) }}%;">&nbsp;</div>
+									</div>
+									<div class="tree-text-holder">
+										<div class="tree-count" style="left: {{ (100 * (obj.tree_count/593)) }}%;">{{ obj.tree_count }}</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+				<button class="table-expand" id="metro-table-expand">&#43; Click to show all D.C. stations</button>
+
+				<figcaption class="graphic-footer copy-width">
+					<div>Sources: Tree locations from <a href="https://caseytrees.org/" target="_blank">Casey Trees</a>, station locations from <a href="https://opendata.dc.gov/" target="_blank">Open Data DC</a></div>
+					<div>Note: Trees planted on private property and some parks are not included.</div>
+				</figcaption>
+			</figure>
+
+			<hr>
+
+			{% for p in copy.body3 %}
+			<p class="prose">{{ p.value }}</p>
+			{% endfor %}
+
+		</div>
+	</div>
+
+	<figure>
+		<div class="flex-row bordered">
+			<div class="flex-column">
+				<img class="photo" src="{% static 'assets/images/white-square.jpeg' %}" alt="Upward view of a tree with white cherry blossoms against a vivid blue sky">
+			</div>
+			<div class="flex-column">
+				<img class="photo" src="{% static 'assets/images/light-pink-square.jpeg' %}" alt="Tree with light pink blossoms in a park">
+			</div>
+			<div class="flex-column">
+				<img class="photo" src="{% static '/assets/images/blossoms-square.jpeg' %}" alt="Close up view of light pink cherry blossoms">
+			</div>
+			<div class="flex-column">
+				<img class="photo" src="{% static 'assets/images/pink-square.jpeg' %}" alt="Branches of tree with medium pink cherry blossoms">
+			</div>
+		</div>
+
+		<figcaption class="graphic-footer centered">Trees that brought me joy in March 2024.
+		</figcaption>
+	</figure>
+
+	<div class="container">
+		<div class="copy-width">
+
+			<section id="about">
+				<h3 class="graphic-hed">How I Built It</h3>
+				{% for p in copy.about %}
+				<p class="methods">{{ p.value }}</p>
+				{% endfor %}
+			</section>
+		</div>
+
+	</div>
+
+</article>
+{% endblock content %}
