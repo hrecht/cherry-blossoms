@@ -9,7 +9,7 @@ export default {
   entrypoints: `scripts/${
     entrypoints.length > 1 ? `{${entrypoints.join(',')}}` : entrypoints[0]
   }.js`,
-  pathPrefix: '/cherry-blossoms/',
+  pathPrefix: '/cherry-blossoms/'
   //pathPrefix:
   //  process.env.BAKER_PATH_PREFIX || process.env.DELIVERY_BASE_PATH || '/',
   //pathPrefix: '/cherry-blossoms/',
