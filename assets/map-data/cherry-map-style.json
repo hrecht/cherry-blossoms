@@ -7,7 +7,7 @@
 	"sources": {
 		"basemap": {
 			"type": "vector",
-			"tiles": ["https://d1xkm7zdg5gd2a.cloudfront.net/dmvmin/{z}/{x}/{y}.mvt"],
+			"url": "pmtiles://https://www.hrecht.com/cherry-blossoms/assets/map-data/dmvmin.pmtiles.gz",
 			"maxzoom": 14
 		}
 	},
